@@ -1,0 +1,28 @@
+{{{ template "header" }}}
+<div id="vue" :class="['box', state]" @dragover="onBoxDragover" @drop="onBoxDrop" @click="onBoxClick">
+	<div v-if="state === 'noFileSelected'">
+		Please click here to select a file or drop a file here.</br>
+		Maximum file size: {{{ .MaxSizeHuman }}}
+	</div>
+	<div v-if="state === 'fileSelected'">
+		Name: {{ file.name }}<br/>
+		Size: {{ (file.size / 1024 / 1024).toFixed(2) }} MiB<br/>
+		<br/>
+		<button @click="onUploadClick">Upload</button>
+	</div>
+	<div v-if="state === 'error'" class="error">
+		{{ error }}<br/>
+		Please try selecting or dropping another file.
+	</div>
+	<div v-if="state === 'success'">
+		Upload succeeded.
+	</div>
+	<div v-if="state === 'busy'">
+		Busy...
+	</div>
+	<input ref="fileInput" type="file" style="display: none" @change="onFileInputChange">
+	<input type="hidden" name="id" value="{{{ .ID }}}">
+	<input type="hidden" name="maxSize" value="{{{ .MaxSize }}}">
+</div>
+<script src="/static/geschenke.js"></script>
+{{{ template "footer" }}}
