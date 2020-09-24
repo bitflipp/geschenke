@@ -26,11 +26,7 @@ var (
 )
 
 func renderErrorPage(c *gin.Context, s int, m string) {
-	c.HTML(s, "error.gohtml", struct {
-		Message string
-	}{
-		Message: m,
-	})
+	c.HTML(s, "error.gohtml", gin.H{"Message": m})
 }
 
 func getNew(c *gin.Context) {
@@ -58,7 +54,7 @@ func getNew(c *gin.Context) {
 
 func getIDID(c *gin.Context) {
 	id := c.Param("id")
-	if strings.Contains("..", id) {
+	if strings.Contains(id, "..") {
 		c.Status(http.StatusBadRequest)
 		return
 	}
@@ -68,14 +64,10 @@ func getIDID(c *gin.Context) {
 		return
 	}
 
-	c.HTML(http.StatusOK, "index.gohtml", struct {
-		ID           string
-		MaxSize      int
-		MaxSizeHuman string
-	}{
-		ID:           id,
-		MaxSize:      flags.MaxSize,
-		MaxSizeHuman: fmt.Sprintf("%.2f MiB", float64(flags.MaxSize)/1024/1024),
+	c.HTML(http.StatusOK, "index.gohtml", gin.H{
+		"ID":           id,
+		"MaxSize":      flags.MaxSize,
+		"MaxSizeHuman": fmt.Sprintf("%.2f MiB", float64(flags.MaxSize)/1024/1024),
 	})
 }
 
@@ -94,7 +86,7 @@ func putIDID(c *gin.Context) {
 		return
 	}
 
-	if strings.Contains("..", m.ID) {
+	if strings.Contains(m.ID, "..") {
 		c.Status(http.StatusBadRequest)
 		return
 	}
@@ -122,11 +114,7 @@ func putIDID(c *gin.Context) {
 }
 
 func noRoute(c *gin.Context) {
-	c.HTML(http.StatusNotFound, "error.gohtml", struct {
-		Message string
-	}{
-		Message: "Not found.",
-	})
+	c.HTML(http.StatusNotFound, "error.gohtml", gin.H{"Message": "Not found."})
 }
 
 func main() {
